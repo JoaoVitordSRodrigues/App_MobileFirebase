@@ -1,6 +1,8 @@
 package com.example.myapplication
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -24,13 +26,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 
 class MainActivity : ComponentActivity() {
+
+    val db = Firebase.firestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MyApplicationTheme {
-                App()
+                App(db)
                 // A surface container using the 'background' color from the theme
                 //Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                   //  Greeting("Android")
@@ -42,7 +50,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App(){
+fun App(db : FirebaseFirestore){
     var nome by remember {
         mutableStateOf("")
     }
@@ -119,7 +127,17 @@ fun App(){
                 .fillMaxWidth(),
             Arrangement.Center
         ){
-            Button(onClick = {}) {
+            Button(onClick = {
+                val city = hashMapOf(
+                    "nome" to nome,
+                    "telefone" to telefone
+                )
+
+                db.collection("Clientes").document("PrimeiroCliente")
+                    .set(city)
+                    .addOnSuccessListener{ Log.d(ContentValues.TAG, "DocumentSnapshot successfully written!")}
+                    .addOnFailureListener{ e -> Log.w(ContentValues.TAG, "Error writing document", e)}
+            }) {
                 Text(text = "Cadastrar")
             }
         }
