@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
+//app
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(db : FirebaseFirestore){
